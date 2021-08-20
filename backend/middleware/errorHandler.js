@@ -24,11 +24,11 @@ const errorHandler = (err, req, res, next) => {
     error = new ErrorResponse(message, 400);
   }
 
-//   add more errors
+  //   add more errors
 
   res.status(error.statusCode || 500).json({
     success: false,
-    error: error.message || 'Server error'
+    error: error.message || "Server error",
   });
 };
 

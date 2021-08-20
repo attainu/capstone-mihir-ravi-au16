@@ -20,7 +20,17 @@ exports.getAllCourses = asyncHandler(async (req, res, next) => {
 
   query = edumy.find(JSON.parse(queryStr));
 
-  const edumy = await edumy.find(JSON.parse(queryStr));
+  if (req.query.sort) {
+    const sortByArr = req.query.sort.split(",");
+
+    const sortByStr = sortByArr.join(" ");
+
+    query = query.sort(sortByStr);
+  } else {
+    query = query.sort("-price");
+  }
+
+  const edumy = await query;
 
   res.status(200).json({
     success: true,
