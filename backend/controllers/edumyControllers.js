@@ -3,7 +3,22 @@ const asyncHandler = require("../middleware/asyncHandler");
 const ErrorResponse = require("../utils/errorResponse");
 
 exports.getAllCourses = asyncHandler(async (req, res, next) => {
-  const edumy = await edumy.find();
+  let query;
+
+  const reqQuery = { ...req.query };
+
+  const removeFields = ["sort"];
+
+  removeFields.forEach((val) => delete reqQuery[val]);
+
+  let queryStr = JSON.stringify(reqQuery);
+
+  queryStr = queryStr.replace(
+    /\b(gt|gte|lt|lte|in)\b/g,
+    (match) => `$${match}`
+  );
+
+  const edumy = await edumy.find(JSON.parse(queryStr));
 
   res.status(200).json({
     success: true,
@@ -41,7 +56,7 @@ exports.updateCoursesById = asyncHandler(async (req, res, next) => {
 });
 
 exports.deleteCoursesCoursesById = asyncHandler(async (req, res, next) => {
-    let edumy = await edumy.findById(req.params.id);
+  let edumy = await edumy.findById(req.params.id);
 
   if (!edumy) {
     return next(
