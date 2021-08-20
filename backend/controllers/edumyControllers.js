@@ -18,6 +18,8 @@ exports.getAllCourses = asyncHandler(async (req, res, next) => {
     (match) => `$${match}`
   );
 
+  query = edumy.find(JSON.parse(queryStr));
+
   const edumy = await edumy.find(JSON.parse(queryStr));
 
   res.status(200).json({
