@@ -1,4 +1,4 @@
-import { CircularProgress, Container, Grid, makeStyles } from "@material-ui/core";
+import { CircularProgress, Container, FormControl, FormControlLabel, Grid, makeStyles, Paper, Radio, RadioGroup, Slider, TextField, Typography } from "@material-ui/core";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -11,6 +11,17 @@ const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    paper: {
+      marginBottom: "1rem",
+      padding: "13px"
+    },
+    filters: {
+      padding: "0 1.5 rem"
+    },
+    priceRangeInputs: {
+      display: "flex",
+      justifyContent: "space-between"
     }
 })
 
@@ -46,6 +57,59 @@ const coursesPages = () => {
   return (
     <Container className={classes.root}>
       {/* Filtering & Sorting */}
+      <Paper className={classes.paper}>
+        <Grid container>
+          <Grid item xs={12} sm={6}>
+            <Typography gutterBottom>Filters</Typography>
+
+            <div className={classes.filters}>
+              <Slider
+                min={0}
+                max={100}
+              />
+
+              <div className={classes.priceRangeInputs}>
+                <TextField
+                  size="small"
+                  id="lower"
+                  label="Min price"
+                  variant="outlined"
+                  type="number"
+                  disabled={loading}
+                  value={0}
+                />
+                <TextField
+                  size="small"
+                  id="upper"
+                  label="Max price"
+                  variant="outlined"
+                  type="number"
+                  disabled={loading}
+                  value={75}
+                />
+              </div>
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography gutterBottom>Sort by</Typography>
+
+            <FormControl component="fieldset" className={classes.filers}>
+              <RadioGroup aria-label="price-order" name="price-order">
+                <FormControlLabel
+                  disabled={loading}
+                  control={<Radio/>}
+                  label="Price: Highest to Lowest"
+                />
+                <FormControlLabel
+                  disabled={loading}
+                  control={<Radio/>}
+                  label="Price: Lowest to Highest"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+        </Grid>
+      </Paper>
 
       {/* Courses listing */}
       <Grid container spacing={2}>
