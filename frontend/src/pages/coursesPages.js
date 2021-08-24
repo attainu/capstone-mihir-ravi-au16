@@ -1,5 +1,6 @@
 import { CircularProgress, Container, FormControl, FormControlLabel, Grid, makeStyles, Paper, Radio, RadioGroup, Slider, TextField, Typography } from "@material-ui/core";
 import { useState, useEffect } from "react";
+import { useHistory, useLocation } from 'react-router-dom';
 import axios from "axios";
 
 const useStyles = makeStyles({
@@ -28,10 +29,18 @@ const useStyles = makeStyles({
 const coursesPages = () => {
   // material ui styles
   const classes = useStyles();
+  const history = useHistory();
+  const location = useLocation();
+
+  const params = location.search ? location.search : null;
   // Component state
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [sliderMax, setSliderMax] = useState(1000);
+  const [priceRange, setPriceRange] = useState([25, 75]);
+
+  const [filter, setFilter] = useState("");
   // side effects
   useEffect(() => {
     let cancel;
@@ -39,9 +48,17 @@ const coursesPages = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        let query;
+
+        if(params && !filter) {
+          query = params;
+        } else {
+          query = filter;
+        }
+
         const { data } = await axios({
           method: "GET",
-          url: `/api/v1/edumy`,
+          url: `/api/v1/edumy${query}`,
           cancelToken: new axios.CancelToken((c) => (cancel = c)),
         });
 
@@ -53,7 +70,20 @@ const coursesPages = () => {
     };
 
     fetchData();
-  }, []);
+
+    return () => cancel();
+  }, [filter, params]);
+
+  const onSliderCommitHandler = (e, newValue) => {
+    buildRangeFilter(newValue);
+  }
+
+  const buildRangeFilter = (newValue) => {
+    const urlFilter = `?price[gte]=${newValue[0]}&[lte]=${newValue[1]}`;
+    setFilter(urlFilter);
+    history.push(urlFilter);
+  }
+
   return (
     <Container className={classes.root}>
       {/* Filtering & Sorting */}
@@ -65,7 +95,11 @@ const coursesPages = () => {
             <div className={classes.filters}>
               <Slider
                 min={0}
-                max={100}
+                max={sliderMax}
+                value={priceRange}
+                valueLabelDisplay="auto"
+                onChange={(e, newValue) => setPriceRange(newValue)}
+                onChangeCommitted={onSliderCommitHandler}
               />
 
               <div className={classes.priceRangeInputs}>
