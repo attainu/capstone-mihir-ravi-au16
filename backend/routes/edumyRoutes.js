@@ -3,7 +3,7 @@ const edumyControllers = require("../controllers/edumyControllers");
 const router = express.Router();
 
 // @route - /api/v1/edumy/
-router
+router 
   .route("/")
   .get(edumyControllers.getAllCourses)
   .post(edumyControllers.createNewCourses);
