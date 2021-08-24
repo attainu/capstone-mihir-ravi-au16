@@ -1,4 +1,4 @@
-import { CircularProgress, Container, FormControl, FormControlLabel, Grid, makeStyles, Paper, Radio, RadioGroup, Slider, TextField, Typography } from "@material-ui/core";
+import { Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, makeStyles, Paper, Radio, RadioGroup, Slider, TextField, Typography } from "@material-ui/core";
 import { useState, useEffect } from "react";
 import { useHistory, useLocation } from 'react-router-dom';
 import axios from "axios";
@@ -74,6 +74,14 @@ const coursesPages = () => {
           query = filter;
         }
 
+        if(sorting) {
+          if(query.length === 0) {
+            query = `?sort=${sorting}`
+          } else {
+            query = query + "$sort=" + sorting;
+          }
+        }
+
         const { data } = await axios({
           method: "GET",
           url: `/api/v1/edumy${query}`,
@@ -136,6 +144,13 @@ const coursesPages = () => {
     } else if(e.target.value === "descending") {
       setSorting("-price");
     }
+  }
+
+  const clearAllFilter = () => {
+    setFilter("");
+    setSorting("");
+    setPriceRange([0, sliderMax]);
+    history.push("/");
   }
 
 
@@ -203,6 +218,7 @@ const coursesPages = () => {
             </FormControl>
           </Grid>
         </Grid>
+        <Button size="small" color="primary" onClick={clearAllFilter}>Clear All</Button>
       </Paper>
 
       {/* Courses listing */}
