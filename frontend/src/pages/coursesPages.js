@@ -2,6 +2,7 @@ import { Button, CircularProgress, Container, FormControl, FormControlLabel, Gri
 import { useState, useEffect } from "react";
 import { useHistory, useLocation } from 'react-router-dom';
 import axios from "axios";
+import CourseCard from "../components/CourseCard";
 
 const useStyles = makeStyles({
     root: {
@@ -120,11 +121,11 @@ const coursesPages = () => {
 
       setPriceRange(newRange);
     }
-  }
+  };
 
   const onSliderCommitHandler = (e, newValue) => {
     buildRangeFilter(newValue);
-  }
+  };
 
   const onTextfieldCommitHandler = () => {
     buildRangeFilter(priceRange);
@@ -144,14 +145,14 @@ const coursesPages = () => {
     } else if(e.target.value === "descending") {
       setSorting("-price");
     }
-  }
+  };
 
   const clearAllFilter = () => {
     setFilter("");
     setSorting("");
     setPriceRange([0, sliderMax]);
     history.push("/");
-  }
+  };
 
 
   return (
@@ -231,7 +232,7 @@ const coursesPages = () => {
             courses.map(course => (
                 <Grid item key={bootcamp._id} xs={12} sm={6} md={4} ls={3}>
                     <CourseCard course={course} />
-                <Grid/>
+                </Grid>
             ))
         )}
       </Grid>
